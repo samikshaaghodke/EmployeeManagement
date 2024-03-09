@@ -28,7 +28,7 @@
        
         <ItemsControl Style="{StaticResource itmCtrlStyle}">
             <WrapPanel VerticalAlignment="Center">
-                <TextBlock Text="Above (Role)" Focusable="False"/>
+                <TextBlock Text="Above which Role" Focusable="False"/>
                 <!--<TextBlock Text="*" Foreground="Red"/>-->
             </WrapPanel>
             <!--Should ignore the current role.-->
