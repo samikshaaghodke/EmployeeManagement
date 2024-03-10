@@ -23,7 +23,7 @@ namespace OrgHierarchy
         public MainWindow() {
             InitializeComponent();
             //Add datacontext
-            this.DataContext = new MainVM(); 
+            this.DataContext = new MainVewModel(); 
         }
     }
 }

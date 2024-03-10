@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Data;
+using System.Windows.Data;//For IMultiValueConverter
 using System.Collections.ObjectModel;
 using OrgHierarchy.Models;
 
@@ -24,7 +24,7 @@ namespace OrgHierarchy.Converters
             ObservableCollection<Role> allroles = null;
             string roleId_toignore = string.Empty;
             string deptID_tofilter = string.Empty;
-            bool filterbyDept = false; //If cross reference is false, then we should filterby department.
+            //bool filterbyDept = false; //If cross reference is false, then we should filterby department.
             int min_level = 1;
 
             for (int i = 0; i < values.Length; i++) {
@@ -37,11 +37,8 @@ namespace OrgHierarchy.Converters
                         break;
                     case 2:
                         deptID_tofilter = values[i] as string;
-                        break;
+                        break;                    
                     case 3:
-                        filterbyDept = (bool)values[i]; //bool cannot be try casted. it has to be direct casted.
-                        break;
-                    case 4:
                         if (values[i] is int level) {
                             min_level = level;
                         }
@@ -49,12 +46,8 @@ namespace OrgHierarchy.Converters
                 }
             }
             if (allroles == null || allroles.Count == 0) return null;
-            if (filterbyDept && string.IsNullOrWhiteSpace(deptID_tofilter)) return null;//If we have department Id filter enabled, but we don't ahve the value set, then we should not return anything because it woul dmean that we have not yet selected the department in the combo box.
             IEnumerable<Role> result;
-            if (filterbyDept) {
-                //Filter by department.
-                result = allroles.Where(p => p.DepartmentId == deptID_tofilter && p.Id != roleId_toignore);
-            }
+           
             result = allroles.Where(p=> p.Id != roleId_toignore);
 
             if (min_level > 1) {

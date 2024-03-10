@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 
 namespace OrgHierarchy.ViewModels {
-    public class MainVM : BaseVM, IConfigHandler {
+    public class MainVewModel : BaseVM, IConfigHandler {
 
         #region Attributes
         IDialogService _ds = new DialogService();
@@ -102,7 +102,7 @@ namespace OrgHierarchy.ViewModels {
 
         #endregion
 
-        public MainVM() {
+        public MainVewModel() {
             Initialize();
         }
 
@@ -421,7 +421,7 @@ namespace OrgHierarchy.ViewModels {
             //Use any suitable way to store the values (Like DB, Text file or server based files etc).
             //here: Using config manager from haley to store files in local(parent) directory.
             UniqueId = Guid.NewGuid();           
-            _cfgMgr.TryRegister(nameof(MainVM), typeof(OrgConfig), _configCache, this, out _);
+            _cfgMgr.TryRegister(nameof(MainVewModel), typeof(OrgConfig), _configCache, this, out _);
         }
 
         private void reset() {

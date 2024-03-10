@@ -38,8 +38,6 @@
                         <Binding Path="Roles" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                         <Binding Path="Current.Id" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                         <Binding Path="Current.DepartmentId" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
-                        <!--If cross referencing is not enabled, then we should filter by department. Else we can show all roles.-->
-                        <Binding Path="IsChecked" Converter="{hm:Converter Kind=InverseBoolean}" ElementName="filter_reporting" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                     </MultiBinding>
                 </ComboBox.ItemsSource>
             </ComboBox>
@@ -54,7 +52,6 @@
                         <Binding Path="Roles" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                         <Binding Path="Current.Id" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                         <Binding Path="Current.DepartmentId" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
-                        <Binding Path="IsChecked" Converter="{hm:Converter Kind=InverseBoolean}" ElementName="filter_reporting" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                         <Binding Path="SelectedItem.Level" ElementName="CbxAboveRole" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                     </MultiBinding>
                 </ComboBox.ItemsSource>
@@ -63,7 +60,6 @@
         <hw:Separator Margin="5"/>
         <Grid Margin="5" >
             <hw:LinkedText Text="Reset Reportings" HorizontalAlignment="Left" Command="{Binding CMDResetReportings}"/>
-            <hw:PlainCheckBox x:Name="filter_reporting" HorizontalAlignment="Right" Content="Cross dept. reporting" IsChecked="False" />
         </Grid>
     </StackPanel>
 </UserControl>
