@@ -56,13 +56,6 @@ namespace OrgHierarchy.Models {
             return clone;
         }
 
-        //void ProcessCurrentLevel() {
-        //    //based on the level above which this is present, we decide our level.
-        //    //Our level is always at 1.
-        //    //get the level of the aboveRole
-        //    //Let us keep it class as a DTO class and not include any methods.
-        //}
-
         public Role() {
             //reports to and Department will store only the ID of the specific elements
         }

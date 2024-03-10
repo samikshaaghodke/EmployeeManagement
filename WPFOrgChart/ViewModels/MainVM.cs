@@ -2,21 +2,20 @@
 using Haley.Enums;
 using Haley.Events;
 using Haley.Models;
-using Haley.MVVM;
-using Haley.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections; //For adding the generic IEnumberable
-using System.Windows.Input;
+using System.Windows.Input;//For ICommand
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using OrgHierarchy.Enums;
 using OrgHierarchy.Models;
 using System.Windows.Threading;
 using Haley.Services;
+using System.Data;
+using System.Collections.Generic;
 
 
 namespace OrgHierarchy.ViewModels {
@@ -24,7 +23,7 @@ namespace OrgHierarchy.ViewModels {
 
         #region Attributes
         IDialogService _ds = new DialogService();
-        IConfigManager _cfgMgr = new ConfigManagerService() { FileExtension = ".org" };
+        IConfigManager _cfgMgr = new ConfigManagerService() { FileExtension = "org" };
         OrgConfig _configCache = new OrgConfig();
         TargetType CurrentTab = TargetType.Employee;
         //Setup a timer to autoclear the textblock message in 2 seconds.
@@ -108,15 +107,13 @@ namespace OrgHierarchy.ViewModels {
         }
 
         #region Config Management
-        public Task OnConfigLoaded(IConfig config) {
+        public Task OnConfigLoaded(IConfig config)
+        {
             //When config is loaded from file
             _configCache = config as OrgConfig; //If we need any further processing we can do here.
             //On first load, we can either merge or overwrite. We go with overwrite (assuming we only load during the startup of the application)
             if (_configCache == null) return null;
-
-            //TO DO LATER:
-            //before adding the items, ensure that we add only the values that are reasonable. 
-            //If roles contain any removed/deleted department, do not add it. Same applies for employee as well. 
+           
             Departments = new ObservableCollection<Department>(_configCache.Departments?.ToList());
             Roles = new ObservableCollection<Role>(_configCache.Roles?.ToList());
             Employees = new ObservableCollection<Employee>(_configCache.Employees?.ToList());
@@ -216,7 +213,8 @@ namespace OrgHierarchy.ViewModels {
 
             var existingObj = Roles.FirstOrDefault(p => p.Id == target.Id);
             //Add or update
-            if (existingObj != null) {
+            if (existingObj != null) 
+            {
                 //We need to find if the new item is reporting to. (not the exsiting item)
                 if (!string.IsNullOrWhiteSpace(target.ReportsTo)) {
                     // we are planning to report to another role.
@@ -261,26 +259,34 @@ namespace OrgHierarchy.ViewModels {
         }
 
         void IncrementRoleLevel(Role target) {
-            //If we increase the level of a target, we need to icnrease its parent too.
-
-            target.Level++; //This level.
-            if (!string.IsNullOrWhiteSpace(target.ReportsTo)) {
+            //If we increase the level of a target, we need to inrease its parent too.
+            target.Level += 1 ; //This level.
+            if (!string.IsNullOrWhiteSpace(target.ReportsTo))
+            {
+               
                 var parent = Roles.FirstOrDefault(p => p.Id == target.ReportsTo);
-                if (parent != null) IncrementRoleLevel(parent);
+               
+                if (parent != null)
+                {
+                   
+                    IncrementRoleLevel(parent);                    
+                }
+                
             }
         }
 
         void ProcessRoleLevels() {
             //We can reset all levels (just in case some reporting strucutre got changed)
             foreach (var role in Roles) {
-                role.Level = 1;
+                role.Level = 1;               
             }
 
             //Whenever an object is added, we need to process all levels.
             //For each role, we define their level based on above and report roles.
 
             //Handle Direct reportings (in separate loop)
-            foreach (var role in Roles) {
+            foreach (var role in Roles) 
+            {
 
                 if (!string.IsNullOrWhiteSpace(role.ReportsTo)) {
                     var supervising_role = Roles.FirstOrDefault(p => p.Id == role.ReportsTo);
@@ -337,27 +343,24 @@ namespace OrgHierarchy.ViewModels {
             switch (CurrentTab) {
                 case TargetType.Employee:
                     if (!(col.First() is Employee)) return;
+                    var empoyees_todel = col.Cast<Employee>().ToList();
+                    foreach (var employee in empoyees_todel)
+                    {
+                        Employees.Remove(employee);
+                    }
                     break;
                 case TargetType.Role:
                     if (!(col.First() is Role)) return;
                     var roles_todel = col.Cast<Role>().ToList();
-                    //Do some logic validation and delete it. 
-                    //Currently, keeping it simple and directly deleting it.
-                    //Later, delete an object and also remove any associated references (sometime the Id of one object could be referenced elsewhere).
-
-                    foreach (var item in roles_todel) {
-                        Roles.Remove(item);
+                    foreach (var role in roles_todel) {
+                        Roles.Remove(role);
                     }
                     break;
                 case TargetType.Department:
                     if (!(col.First() is Department)) return;
                     var depts_todel = col.Cast<Department>().ToList();
-                    //Do some logic validation and delete it. 
-                    //Currently, keeping it simple and directly deleting it.
-                    //Later, delete an object and also remove any associated references (sometime the Id of one object could be referenced elsewhere).
-
-                    foreach (var item in depts_todel) {
-                        Departments.Remove(item);
+                    foreach (var dept in depts_todel) {
+                        Departments.Remove(dept);
                     }
                     break;
                 default:
@@ -417,10 +420,7 @@ namespace OrgHierarchy.ViewModels {
             //Also setup a way to store the current values to files.
             //Use any suitable way to store the values (Like DB, Text file or server based files etc).
             //here: Using config manager from haley to store files in local(parent) directory.
-            UniqueId = Guid.NewGuid();
-            //if (_cfgMgr.TryRegister(nameof(MainVM), typeof(OrgConfig), _configCache, this, out _)) {
-            //    _cfgMgr.LoadConfig(nameof(MainVM));
-            //};
+            UniqueId = Guid.NewGuid();           
             _cfgMgr.TryRegister(nameof(MainVM), typeof(OrgConfig), _configCache, this, out _);
         }
 

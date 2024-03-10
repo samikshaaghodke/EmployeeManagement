@@ -46,8 +46,7 @@
         </ItemsControl>
         <ItemsControl Style="{StaticResource itmCtrlStyle}">
             <WrapPanel VerticalAlignment="Center">
-                <TextBlock Text="Reports To (Role)" Focusable="False"/>
-                <!--<TextBlock Text="*" Foreground="Red"/>-->
+                <TextBlock Text="Reports To (Role)" Focusable="False"/>              
             </WrapPanel>
             <ComboBox  SelectedValuePath="Id" SelectedValue="{Binding Current.ReportsTo,Mode=TwoWay, NotifyOnSourceUpdated=True,  UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1" Height="27">
                 <ComboBox.ItemsSource>

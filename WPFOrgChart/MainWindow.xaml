@@ -47,7 +47,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Height="90" HorizontalAlignment="Center">
-            <hw:ComboButton Style="{StaticResource cmbStyle}" hw:Icon.Default="{StaticResource home_solid}" Content="Home" CommandParameter="{x:Static enm:CurrentView.DataEntry}" Command="{Binding CMDChangeView}" Tag="{x:Static enm:CurrentView.DataEntry}"/>
+            <hw:ComboButton Style="{StaticResource cmbStyle}" hw:Icon.Default="{StaticResource bs_people}" Content="Employee Management" Width="200" CommandParameter="{x:Static enm:CurrentView.DataEntry}" Command="{Binding CMDChangeView}" Tag="{x:Static enm:CurrentView.DataEntry}"/>
         </StackPanel>
         <ContentControl Grid.Row="1" Content="{Binding}">
             <ContentControl.Style>

@@ -57,9 +57,6 @@
             <TabItem Header="DEPARTMENT" Width="120" Tag="{x:Static enm:TargetType.Department}">
                 <tpages:AddDepartment DataContext="{Binding}"/>
             </TabItem>
-            <!-- Extend salary later (if required)-->
-            <!--<TabItem Header="SALARY" Width="120">
-            </TabItem>-->
         </TabControl>
         <!--To add buttons-->
         <Grid Grid.Row="1" Margin="5,10">
@@ -86,8 +83,7 @@
             <DataGrid x:Name="dgrid_main" Grid.Row="1" Background="{x:Null}" ItemsSource="{Binding CurrentValues,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" CanUserResizeRows="False"  CanUserAddRows="False" IsReadOnly="True" AlternatingRowBackground="Gainsboro" GridLinesVisibility="Vertical" VerticalGridLinesBrush="Gray" CanUserDeleteRows="False" EnableRowVirtualization="True" BorderThickness="0" CanUserReorderColumns="False">
                 <DataGrid.Resources>
                     <!-- Default datagrid has a resource with Key " HighlightBrushKey. We will over write that key here with a color. So that our color will be used instead of default one.-->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="IndianRed"/>
-                    <!-- Same concept as above. But, we are not over writing any key but overwriting the style of datagridcolumn header itself.-->
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="IndianRed"/>                   
                     <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}"/>
                 </DataGrid.Resources>
                 <DataGrid.Columns>

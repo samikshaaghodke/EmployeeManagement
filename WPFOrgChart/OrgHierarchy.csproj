@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Haley.Helpers" Version="2.1.9" />
     <PackageReference Include="Haley.WPF" Version="5.3.0-beta7" />
-    <PackageReference Include="Haley.WPF.IconsPack" Version="1.0.6" />
+    <PackageReference Include="Haley.WPF.IconsPack" Version="1.0.7" />
   </ItemGroup>
 
 </Project>
