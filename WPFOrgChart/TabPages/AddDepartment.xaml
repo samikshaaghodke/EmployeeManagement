@@ -19,17 +19,8 @@
         <ItemsControl Style="{StaticResource itmCtrlStyle}" >
             <WrapPanel VerticalAlignment="Center" Focusable="False">
                 <TextBlock Text="Description" />
-                <!--<TextBlock Text="*" Foreground="Red"/>-->
             </WrapPanel>
             <TextBox Text="{Binding Current.Description,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Height="27"/>
         </ItemsControl>
-        <!--If required, extend department to be under other departments (heirarchical)-->
-        <!--<ItemsControl Style="{StaticResource itmCtrlStyle}">
-                        <WrapPanel VerticalAlignment="Center">
-                            <TextBlock Text="Falls Under" />
-                            <TextBlock Text="*" Foreground="Red"/>
-                        </WrapPanel>
-                        <TextBox Text="" Grid.Column="1" Height="27"/>
-                    </ItemsControl>-->
     </StackPanel>
 </UserControl>

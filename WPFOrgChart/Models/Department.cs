@@ -15,13 +15,15 @@ namespace OrgHierarchy.Models {
             set { SetProp(ref _description, value); }
         }
 
-        public override string ToString() {
+        public override string ToString() 
+        {
             return Title;
         }
 
-        public override object Clone() {
+        public override object Clone()
+        {
             Department clone = new Department();
-            this.MapProperties<Department, Department>(clone); //Mapping a Role object to another ROle object by the matching property names.
+            this.MapProperties<Department, Department>(clone); //Mapping a Department object to another Department object by the matching property names.
             return clone;
         }
 

@@ -12,8 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="itmCtrlStyle" TargetType="{x:Type ItemsControl}">
-                <Setter Property="Focusable" Value="False"/>
-                <!--So that the tab button doesn't stop here-->
+                <Setter Property="Focusable" Value="False"/>               
                 <Setter Property="ItemsPanel">
                     <Setter.Value>
                         <ItemsPanelTemplate>
@@ -32,7 +31,7 @@
                 <Setter Property="Focusable" Value="False"/>
             </Style>
 
-            <conv:FilteredRoleConverter x:Key="RoleFilter"/>
+            <conv:FilteredRoleConverter x:Key="RoleFilter"/> <!--custom converter-->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

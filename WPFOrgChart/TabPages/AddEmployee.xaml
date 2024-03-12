@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OrgHierarchy.TabPages"
-              xmlns:hw="http://schemas.hpod9.com/haley/wpf"
+             xmlns:hw="http://schemas.hpod9.com/haley/wpf"
              xmlns:hm="http://schemas.hpod9.com/haley/mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
     <StackPanel>
-        <ItemsControl Style="{StaticResource itmCtrlStyle}">
+        <ItemsControl Style="{StaticResource itmCtrlStyle}"><!--itmCtrlStyle key present in App.xaml-->
             <WrapPanel VerticalAlignment="Center" >
                 <TextBlock Text="First Name" />
                 <TextBlock Text="*" Foreground="Red"/>
@@ -21,7 +21,7 @@
                 <TextBlock Text="Last Name" />
                 <TextBlock Text="*" Foreground="Red"/>
             </WrapPanel>
-            <TextBox Text="{Binding Current.LastName}" Grid.Column="1" Height="27"/>
+            <TextBox Text="{Binding Current.LastName,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Height="27"/>
         </ItemsControl>
         <ItemsControl Style="{StaticResource itmCtrlStyle}">
             <WrapPanel VerticalAlignment="Center" >
@@ -30,7 +30,6 @@
             </WrapPanel>
             <TextBox Text="{Binding Current.EmailId,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Height="27"/>
         </ItemsControl>
-
         <ItemsControl Style="{StaticResource itmCtrlStyle}">
             <WrapPanel VerticalAlignment="Center" >
                 <TextBlock Text="Department" />
@@ -38,7 +37,6 @@
             </WrapPanel>
             <ComboBox ItemsSource="{Binding Departments,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id" SelectedValue="{Binding Current.DepartmentId,Mode=TwoWay, NotifyOnSourceUpdated=True,  UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1" Height="27"/>
         </ItemsControl>
-
         <ItemsControl Style="{StaticResource itmCtrlStyle}">
             <WrapPanel VerticalAlignment="Center" >
                 <TextBlock Text="Role" />

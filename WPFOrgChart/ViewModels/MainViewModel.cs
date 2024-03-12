@@ -4,11 +4,9 @@ using Haley.Events;
 using Haley.Models;
 using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Collections; //For adding the generic IEnumberable
 using System.Windows.Input;//For ICommand
-using System.ComponentModel;
 using System.Collections.ObjectModel;
 using OrgHierarchy.Enums;
 using OrgHierarchy.Models;
@@ -19,14 +17,19 @@ using System.Collections.Generic;
 
 
 namespace OrgHierarchy.ViewModels {
-    public class MainVewModel : BaseVM, IConfigHandler {
+    public class MainViewModel : BaseVM, IConfigHandler
+    {
+        public MainViewModel()
+        {
+            Initialize();
+        }
 
         #region Attributes
-        IDialogService _ds = new DialogService();
+        IDialogService _ds = new DialogService(); // to show dialog box if you select reporting to lower level
         IConfigManager _cfgMgr = new ConfigManagerService() { FileExtension = "org" };
-        OrgConfig _configCache = new OrgConfig();
+        OrgConfig _configCache = new OrgConfig(); //cache variable
         TargetType CurrentTab = TargetType.Employee;
-        //Setup a timer to autoclear the textblock message in 2 seconds.
+        //Setup a timer to autoclear the textblock validation message in 2 seconds.
         DispatcherTimer timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(2.5) };
          //Since this is a simple application, directly initiating a config manager. For complex/enterprise apps, consider using a dependency injection and reuse config manager.
         #endregion
@@ -35,9 +38,10 @@ namespace OrgHierarchy.ViewModels {
         public Guid UniqueId { get; set; }
 
         #region Current Elements
-        //An object for the editable value and an Ienumerable for the results
+        //An object for the display/editable value and an IEnumerable for the grid results
 
         private object _current = new Employee();
+
         private IEnumerable _currentValues;
 
         private CurrentView _displayView = CurrentView.DataEntry;
@@ -52,13 +56,12 @@ namespace OrgHierarchy.ViewModels {
         }
         public IEnumerable CurrentValues {
             get { return _currentValues; }
-            set { _currentValues = value; OnPropertyChanged(); }
+            set { _currentValues = value; OnPropertyChanged(); } //notifying the UI about the change.
         }
         public CurrentView DisplayView {
             get { return _displayView; }
             set { SetProp(ref _displayView, value); }
         }
-
         public string Message {
             get { return _message; }
             set { SetProp(ref _message, value); }
@@ -100,18 +103,15 @@ namespace OrgHierarchy.ViewModels {
         public ICommand CMDTabChanged => new DelegateCommand<object>(tabChanged);
         #endregion
 
-        #endregion
-
-        public MainVewModel() {
-            Initialize();
-        }
+        #endregion      
 
         #region Config Management
+        //These methods interact with the IConfigHandler interface to manage application configurations.
         public Task OnConfigLoaded(IConfig config)
         {
             //When config is loaded from file
-            _configCache = config as OrgConfig; //If we need any further processing we can do here.
-            //On first load, we can either merge or overwrite. We go with overwrite (assuming we only load during the startup of the application)
+            _configCache = config as OrgConfig; 
+            //On first load,We go with overwrite (assuming we only load during the startup of the application)
             if (_configCache == null) return null;
            
             Departments = new ObservableCollection<Department>(_configCache.Departments?.ToList());
@@ -124,7 +124,7 @@ namespace OrgHierarchy.ViewModels {
             return Task.FromResult(true);
         }
         public IConfig OnConfigSaving() {
-            //send in a value that wil lbe saved to the file.
+            //send in a value that will be saved to the file.
             //Fill the config file 
             _configCache.Departments = Departments.ToList();
             _configCache.Roles = Roles.ToList();
@@ -134,19 +134,20 @@ namespace OrgHierarchy.ViewModels {
             return _configCache;
         }
 
-        public IConfig PrepareDefaultConfig() {
-            //On Failure, when creating new config.
-            return new OrgConfig(); //No other values needed.
+        public IConfig PrepareDefaultConfig()
+        {
+            //when creating new config.
+            return new OrgConfig(); 
         }
         #endregion
 
         #region Core Processing
-        void addUpdate() {            
-            //keep it simple and validate within each block.
-            //Based on the current tab type, fetch the current object and add to the collection.
-            //TO DO: VALIDATE AND CHECK IF WE ARE ADDING OR UPDATING EXISTING VALUES.
-            //ADDING TO COLLECTION DIRECTLY AND SINCE CURRENT VALUES ARE REFERENCING THIS, ASSUMIGN THAT IT WILL AUTOMATICALLY UPDATE VALUES IN UI (CHECK AND FIX LATER)
-            switch (CurrentTab) {
+        void addUpdate() 
+        {            
+            // validate within each block.
+            //Based on the current tab type, fetch the current object and add to the collection. 
+            switch (CurrentTab) 
+            {
                 case TargetType.Employee:
                     if (!ProcessEmployee()) return;
                     break;
@@ -164,37 +165,44 @@ namespace OrgHierarchy.ViewModels {
             var target = Current as Department;
 
             //Validate
-            if (target == null || string.IsNullOrWhiteSpace(target.Title)) {
+            if (target == null || string.IsNullOrWhiteSpace(target.Title))
+            {
                 SetMessage();
                 return false;
             }
             var existingObj = Departments.FirstOrDefault(p => p.Id == target.Id);
             //Add or update
-            if (existingObj != null) {
+            if (existingObj != null)
+            {
                 //Exists already, now get the element and replace it.
                 var index = Departments.IndexOf(existingObj);
                 Departments[index] = target; //replaced.
-            } else {
+            } 
+            else 
+            {
                 Departments.Add(target); //added
             }
             return true;
         }
-
         bool ProcessEmployee() {
             var target = Current as Employee;
 
             //Validate
-            if (target == null || string.IsNullOrWhiteSpace(target.FirstName) || string.IsNullOrWhiteSpace(target.LastName)) {
+            if (target == null || string.IsNullOrWhiteSpace(target.FirstName) || string.IsNullOrWhiteSpace(target.LastName))
+            {
                 SetMessage();
                 return false;
             }
             var existingObj = Employees.FirstOrDefault(p => p.Id == target.Id);
             //Add or update
-            if (existingObj != null) {
-                //Exists already, now get the element and replace it.
+            if (existingObj != null) 
+            {
+               //Exists already, now get the element and replace it.
                 var index = Employees.IndexOf(existingObj);
                 Employees[index] = target; //replaced.
-            } else {
+            } 
+            else
+            {
                 Employees.Add(target); //added
             }
             ProcessEmployeeManagers();
@@ -204,12 +212,11 @@ namespace OrgHierarchy.ViewModels {
             var target = Current as Role;
 
             //Validate
-            if (target == null || string.IsNullOrWhiteSpace(target.Title) || string.IsNullOrWhiteSpace(target.DepartmentId)) {
+            if (target == null || string.IsNullOrWhiteSpace(target.Title) || string.IsNullOrWhiteSpace(target.DepartmentId))
+            {
                 SetMessage();
                 return false;
             }
-
-            //Whenever we try to process a role, validate if the levels are correct. Else set a message and return. (this mostly applies when we are editing existing items.
 
             var existingObj = Roles.FirstOrDefault(p => p.Id == target.Id);
             //Add or update
@@ -220,11 +227,12 @@ namespace OrgHierarchy.ViewModels {
                     // we are planning to report to another role.
                     //Is this another role, above our role ?
                     var possible_supervisor = Roles.FirstOrDefault(p => p.Id == target.ReportsTo);
-                    if (possible_supervisor != null && possible_supervisor.Level < target.Level) {
+                    if (possible_supervisor != null && possible_supervisor.Level < target.Level)
+                    {                        
                         var  confirmation = _ds.ShowDialog("Conflict", $@"You are trying to report to a Role which is at a lower level than the existing one. {Environment.NewLine}This might result in breaking the reporting structure of the target role.  {Environment.NewLine} Do you wish to proceed?", NotificationIcon.Warning, DialogMode.Confirmation, blurOtherWindows: true);
-                        if (!confirmation.DialogResult.HasValue || !confirmation.DialogResult.Value) return false; //break away
-
-                        //Since user has decided to set it up, remove the supervisor's reporting structure  (or should it be enhanced??)
+                        if (!confirmation.DialogResult.HasValue || !confirmation.DialogResult.Value) 
+                            return false;
+                      
                         possible_supervisor.ReportsTo = string.Empty; //Now we remove the reporting head.
                     }
                 }
@@ -232,71 +240,73 @@ namespace OrgHierarchy.ViewModels {
                 //Exists already, now get the element and replace it.
                 var index = Roles.IndexOf(existingObj);
                 Roles[index] = target; //replaced.   
-            } else {
+            } 
+            else
+            {
                     Roles.Add(target); //added
-                }
+            }
             //Whenever we process a role (add or edit), we need to process their levels as well
             ProcessRoleLevels();
             ProcessEmployeeManagers();
             return true;
         }
-
-        private void ProcessEmployeeManagers() {
-            //Whenever role changes or employee changes, do this.
-            foreach (var employee in Employees) {
-                //If he has a role id, get the role id and 
-                //Role is mandatory, so every employee will have one role (Ensure later on config loding)
+        private void ProcessEmployeeManagers()
+        {
+            foreach (var employee in Employees) 
+            {
+                //If he/she has a role id, get the role id and Role is mandatory, so every employee will have one role 
                 var thisRole = Roles.FirstOrDefault(p => p.Id == employee.RoleId); //This role will be based on a department as well.
                 if (string.IsNullOrWhiteSpace(thisRole?.ReportsTo)) continue; //This role doesn't report to anyone, yet.
 
-                //If any employee has this role, then he/she becomes the manager.
-                //TO DO: (May be more than one employee could hold same role. We need to find which would be the manager)
+                //If any employee has this role, then he/she becomes the manager.               
                 var possible_mgr = Employees.FirstOrDefault(q => q.RoleId == thisRole?.ReportsTo);
-                if (possible_mgr != null) {
+                if (possible_mgr != null)
+                {
                     employee.PossibleManager = $@"{possible_mgr.FirstName} {possible_mgr.LastName}";
                 }
             }
         }
-
-        void IncrementRoleLevel(Role target) {
+      
+        void IncrementRoleLevel(Role target)
+        {
             //If we increase the level of a target, we need to inrease its parent too.
-            target.Level += 1 ; //This level.
+            target.Level += 1 ;
+
             if (!string.IsNullOrWhiteSpace(target.ReportsTo))
             {
-               
                 var parent = Roles.FirstOrDefault(p => p.Id == target.ReportsTo);
-               
+
                 if (parent != null)
                 {
-                   
-                    IncrementRoleLevel(parent);                    
+                    IncrementRoleLevel(parent);
                 }
-                
             }
         }
-
-        void ProcessRoleLevels() {
+        void ProcessRoleLevels()
+        {
             //We can reset all levels (just in case some reporting strucutre got changed)
-            foreach (var role in Roles) {
+            foreach (var role in Roles) 
+            {
                 role.Level = 1;               
             }
-
             //Whenever an object is added, we need to process all levels.
             //For each role, we define their level based on above and report roles.
 
-            //Handle Direct reportings (in separate loop)
-            foreach (var role in Roles) 
+            ////Handle Direct reportings (in separate loop)
+            foreach (var role in Roles)
             {
-
-                if (!string.IsNullOrWhiteSpace(role.ReportsTo)) {
+                if (!string.IsNullOrWhiteSpace(role.ReportsTo))
+                {
                     var supervising_role = Roles.FirstOrDefault(p => p.Id == role.ReportsTo);
-                    if (supervising_role == null) {
-                        role.ReportsTo = string.Empty; //supervising/reportsto role is empty
+                    if (supervising_role == null)
+                    {
+                        role.ReportsTo = string.Empty; //reportsto role is empty
                         continue;
                     }
 
                     //Now based on our level, we are going to increase the reporting level.
-                    if (supervising_role.Level <= role.Level) {
+                    if (supervising_role.Level <= role.Level)
+                    {
                         //Only if the supervising level is also equal to this level or less than this level, increase it.
                         supervising_role.Level = role.Level; //increase the supervising level.
                         IncrementRoleLevel(supervising_role);
@@ -304,13 +314,17 @@ namespace OrgHierarchy.ViewModels {
                 }
             }
 
+
             //Handle Above Levels (in separate loop)
-            foreach (var role in Roles) { 
-                if (!string.IsNullOrWhiteSpace(role.AboveRole)) {
+            foreach (var role in Roles)
+            { 
+                if (!string.IsNullOrWhiteSpace(role.AboveRole)) 
+                {
                     //this role is above some other role.
                     //get the aboveRole
                     var above_role = Roles.FirstOrDefault(p => p.Id == role.AboveRole);
-                    if (above_role == null) {
+                    if (above_role == null)
+                    {
                         //May be this role is removed.
                         role.AboveRole = string.Empty;
                         continue;
@@ -318,11 +332,12 @@ namespace OrgHierarchy.ViewModels {
 
                     //If above role also exits, get it's level and increment this level
                     //if we are not already above the specified level, then we increase
-                    if (role.Level <= above_role.Level) {
+                    if (role.Level <= above_role.Level)
+                    {
                         //only when this role is less or equal to the above role
                         //First bring the role to the level of the above role.
                         role.Level = above_role.Level;
-                        IncrementRoleLevel(role);//increment by one. //We need to recursively do this.
+                        IncrementRoleLevel(role);//we need to recursively do this.
                     }
                 }
             }
@@ -334,13 +349,14 @@ namespace OrgHierarchy.ViewModels {
             Current = null;
         }
 
-        private void DeleteSelected(object obj) {
-            //Based on the selected tab, the incoming object could be anything (employee,role,department).. but, we know one thinig for sure, whatever it is, it will contain Id (since it is all based on OrgBaseModel)
+        private void DeleteSelected(object obj) 
+        {            
             //As per MSDN, SelectedItemCollection is implementing ObservableCollection<Object>
             if (obj == null || !(obj is ObservableCollection<object> col) || col.Count == 0) return;
 
             //Now, get the first object of the col and try to cast it based on the current tab.
-            switch (CurrentTab) {
+            switch (CurrentTab)
+            {
                 case TargetType.Employee:
                     if (!(col.First() is Employee)) return;
                     var empoyees_todel = col.Cast<Employee>().ToList();
@@ -369,17 +385,18 @@ namespace OrgHierarchy.ViewModels {
             reset(); //so that the new collection is also updated in the UI.
         }
 
-        private void EditSelected(object obj) {
+        private void EditSelected(object obj)
+        {
             //Incoming obj should be one of the currentValues.
             if (obj == null || obj.GetType() != GetCurrentType() || !(obj is OrgBaseModel obj_base)) return;
-            //Dont try to set the object directly, this affects the values and we lose the reset option.
-            //The moment we change values in UI, the actual value is affected as it is by reference
-            //so, clone it.
+            
             Current = obj_base.Clone();
         }
 
-        Type GetCurrentType() {
-            switch (CurrentTab) {
+        Type GetCurrentType() 
+        {
+            switch (CurrentTab)
+            {
                 case TargetType.Employee:
                     return typeof(Employee);
                 case TargetType.Role:
@@ -390,24 +407,28 @@ namespace OrgHierarchy.ViewModels {
             return null;
         }
 
-        private void HandleKeyDown(object obj) {
+        private void HandleKeyDown(object obj)
+        {
             //This is monitoring all key downs. 
             if (!(obj is HotKeyArgs hkargs)) return;
 
-            if (hkargs.PressedKeys.First() == Key.Escape) {
+            if (hkargs.PressedKeys.First() == Key.Escape) 
+            {
                 //reset everything if we press escape
                 reset();
-            } else if (hkargs.PressedKeys.First() == Key.Enter) {
-                //Add / update value
+            } else if (hkargs.PressedKeys.First() == Key.Enter) 
+            {
+                //Add or update value
                 addUpdate();
-            } else if (hkargs.PressedKeys.Count() == 2) {
+            } 
+            else if (hkargs.PressedKeys.Count() == 2) 
+            {
                 if (hkargs.PressedKeys.Contains(Key.LeftCtrl) && hkargs.PressedKeys.Contains(Key.S)) {
                     //We need to save the file.
                     _cfgMgr.SaveAll();
                 }
             }
-
-            //To do : Handle other key down events.
+          
         }
 
         private void HandlerTimer(object? sender, EventArgs e) {
@@ -417,19 +438,16 @@ namespace OrgHierarchy.ViewModels {
 
         private void Initialize() {
             timer.Tick += HandlerTimer;
-            //Also setup a way to store the current values to files.
-            //Use any suitable way to store the values (Like DB, Text file or server based files etc).
-            //here: Using config manager from haley to store files in local(parent) directory.
+            //Using config manager from haley to store text file locally and MainViewModel is properly initialized with a unique identifierand registered with a configuration manager
             UniqueId = Guid.NewGuid();           
-            _cfgMgr.TryRegister(nameof(MainVewModel), typeof(OrgConfig), _configCache, this, out _);
+            _cfgMgr.TryRegister(nameof(MainViewModel), typeof(OrgConfig), _configCache, this, out _);
         }
 
-        private void reset() {
-            //TO Implement
+        private void reset() {            
             switch (CurrentTab) {
                 case TargetType.Employee:
                     Current = new Employee();
-                    CurrentValues = Employees;
+                    CurrentValues = new ObservableCollection<Employee>(Employees.ToList());
                     break;
                 case TargetType.Role:
                     Current = new Role();
@@ -445,34 +463,39 @@ namespace OrgHierarchy.ViewModels {
             }
         }
 
-        private void resetReportings() {
-            //For the current object.
-            if (Current is Role role) {
+        private void resetReportings()
+        {
+            if (Current is Role role)
+            {
                 role.AboveRole = String.Empty;
                 role.ReportsTo = String.Empty;
             }
         }
-        void SetMessage(string msg = "Please enter all mandatory values") {
+        void SetMessage(string msg = "Please enter all mandatory values")
+        {
             Message = msg;
-            if (!string.IsNullOrEmpty(msg)) {
+            if (!string.IsNullOrEmpty(msg)) 
+            {
                 //if message is not null, initiate the timer.
                 timer.Stop(); //incase we are trying to set multiple messages in succession.
                 timer.Start();
                 MessageVisible = true;
-            } else {
+            } 
+            else 
+            {
                 MessageVisible = false;
             }
         }
-
-        //Even when tab is not changed, this is getting called.
-        private void tabChanged(object obj) {
+      
+        private void tabChanged(object obj) 
+        {
             //Even when we move focus to another control, it is getting triggered
             if (!(obj is TargetType targetEnum)) return;
 
             //Now it is persistent
             if (CurrentTab == targetEnum) return; //We didn't change the current tab.
 
-            //Whenever tab changed, let us reset the values irrespective ofwhat has been changed.
+            //Whenever tab changed, let us reset the values irrespective of what has been changed.
             clear(); //Still need to identify the first tab on initialization. 
             //receive the tag of the selected item.
             //Associate an enum with the tag, so that it will be easy for us to identify.

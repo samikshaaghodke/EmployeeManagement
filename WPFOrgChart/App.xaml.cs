@@ -12,9 +12,10 @@ namespace OrgHierarchy
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application {
-        private void Application_Startup(object sender, StartupEventArgs e) {
+        private void Application_Startup(object sender, StartupEventArgs e) 
+        {
             Initialize();
-            //Finally call the window.
+            //Finally call the Main Window.
             MainWindow mw = new MainWindow();
             mw.ShowDialog();
         }

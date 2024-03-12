@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OrgHierarchy.TabPages"
-              xmlns:hw="http://schemas.hpod9.com/haley/wpf"
+             xmlns:hw="http://schemas.hpod9.com/haley/wpf"
              xmlns:hm="http://schemas.hpod9.com/haley/mvvm"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
@@ -16,7 +16,6 @@
             </WrapPanel>
             <TextBox Text="{Binding Current.Title,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Height="27"/>
         </ItemsControl>
-
         <ItemsControl Style="{StaticResource itmCtrlStyle}">
             <WrapPanel VerticalAlignment="Center" Focusable="False">
                 <TextBlock Text="Department" />
@@ -24,20 +23,19 @@
             </WrapPanel>
             <!--Lets bind to selected value with two way mode-->
             <ComboBox ItemsSource="{Binding Departments,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id" SelectedValue="{Binding Current.DepartmentId,Mode=TwoWay, NotifyOnSourceUpdated=True,  UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1" Height="27"/>
-        </ItemsControl>
-       
+        </ItemsControl>       
         <ItemsControl Style="{StaticResource itmCtrlStyle}">
             <WrapPanel VerticalAlignment="Center">
                 <TextBlock Text="Above which Role" Focusable="False"/>
-                <!--<TextBlock Text="*" Foreground="Red"/>-->
             </WrapPanel>
             <!--Should ignore the current role.-->
             <ComboBox x:Name="CbxAboveRole"  SelectedValuePath="Id" SelectedValue="{Binding Current.AboveRole,Mode=TwoWay, NotifyOnSourceUpdated=True,  UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1" Height="27">
                 <ComboBox.ItemsSource>
                     <MultiBinding Converter="{StaticResource RoleFilter}">
                         <Binding Path="Roles" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
-                        <Binding Path="Current.Id" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="Current.Id" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>                       
                         <Binding Path="Current.DepartmentId" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="SelectedItem.Level"  NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                     </MultiBinding>
                 </ComboBox.ItemsSource>
             </ComboBox>

@@ -10,23 +10,23 @@
         xmlns:hw="http://schemas.hpod9.com/haley/wpf"
         xmlns:hm="http://schemas.hpod9.com/haley/mvvm"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="500" WindowStartupLocation="CenterScreen">
+        Title="Organisation Hierarchy" Height="700" Width="500" WindowStartupLocation="CenterScreen">
     <!--Child Controls will forward the keydown events, only if they are focused. So it is better to handle the keydowns in Mainview-->
     <beh:Interaction.Behaviors>
         <hm:HotKeyHandler KeyDownCommand="{Binding CMDKeyDown}"/>
     </beh:Interaction.Behaviors>
     <Window.Resources>
         <ResourceDictionary>
-            <DataTemplate x:Key="PageDataEntry">
+            <DataTemplate x:Key="PageDataEntry"> <!--Visual representation of data objects-->
                 <ctrls:DataEntryPage DataContext="{Binding}"/>
             </DataTemplate>
-            <Style x:Key="cmbStyle" TargetType="{x:Type hw:ComboButton}">
+            <Style x:Key="cmbStyle" TargetType="{x:Type hw:ComboButton}"> <!--Employee Management Icon-->
                 <Setter Property="Width" Value="85"/>
                 <Setter Property="Margin" Value="15,0"/>
                 <Setter Property="Background" Value="{x:Null}"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="hw:Hover.Background" Value="{x:Null}"/>
-                <Setter Property="hw:Icon.DefaultColor" Value="DarkSlateGray"/>
+                <Setter Property="hw:Icon.DefaultColor" Value="IndianRed"/>
                 <Style.Triggers>
                     <DataTrigger Value="True">
                         <DataTrigger.Binding>
@@ -34,8 +34,7 @@
                                 <Binding Path="DisplayView" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
                                 <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
                             </MultiBinding>
-                        </DataTrigger.Binding>
-                        <Setter Property="hw:Icon.DefaultColor" Value="IndianRed"/>
+                        </DataTrigger.Binding>                     
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

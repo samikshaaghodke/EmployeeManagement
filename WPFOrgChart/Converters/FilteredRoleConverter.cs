@@ -8,57 +8,47 @@ using OrgHierarchy.Models;
 
 namespace OrgHierarchy.Converters
 {
-    public class FilteredRoleConverter : IMultiValueConverter {
+    public class FilteredRoleConverter : IMultiValueConverter //to convert multiple input values
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            // We expect four values:
+            // Value[0]: All roles (ObservableCollection<Role>)
+            // Value[1]: RoleId to ignore (string)
+            // Value[2]: DepartmentId to filter by (string)
+            // Value[3]: Minimum level of roles (int)
 
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            //We expect two values.
-            //Value[0] should be List of all roles
-            //Value[1] should be RoleIdToIgnore
-            //Value[2] should be FilterBy_DepartmentId
-            //Value[3] should be Bool to let us know if we are enabling cross dept or not (to consider dept filter or not).
-            //Value[4] should be in Int (for minimum level of roles)
+            if (values == null || values.Length != 4)
+                return null;
 
-            if (values == null) return null;
-            if (values.Length == 1) return values[0]; //Just send all roles.
+            if (!(values[0] is IEnumerable<Role> allRoles))
+                return null;
 
-            ObservableCollection<Role> allroles = null;
-            string roleId_toignore = string.Empty;
-            string deptID_tofilter = string.Empty;
-            //bool filterbyDept = false; //If cross reference is false, then we should filterby department.
-            int min_level = 1;
+            string roleIdToIgnore = values[1] as string;
+            string departmentIdToFilter = values[2] as string;
+            //int minLevel = values[3] as int? ?? 1;
+            int minLevel = 1; // Default value
 
-            for (int i = 0; i < values.Length; i++) {
-                switch (i) {
-                    case 0:
-                        allroles = values[i] as ObservableCollection<Role>;
-                        break;
-                    case 1:
-                        roleId_toignore = values[i] as string;
-                        break;
-                    case 2:
-                        deptID_tofilter = values[i] as string;
-                        break;                    
-                    case 3:
-                        if (values[i] is int level) {
-                            min_level = level;
-                        }
-                        break;
-                }
-            }
-            if (allroles == null || allroles.Count == 0) return null;
-            IEnumerable<Role> result;
-           
-            result = allroles.Where(p=> p.Id != roleId_toignore);
-
-            if (min_level > 1) {
-                result = result.Where(p=> p.Level > min_level);
+            // Check if the fourth value is an integer
+            if (values[3] is int level)
+            {
+                minLevel = level;
             }
 
-            return result;
+            // Filter roles based on the provided criteria
+            IEnumerable<Role> filteredRoles = allRoles.Where(role =>
+                (role.DepartmentId == departmentIdToFilter || departmentIdToFilter == null) && // Filter by department if provided
+                role.Id != roleIdToIgnore && // Exclude role to ignore
+                role.Level >= minLevel // Filter by minimum level
+            );
+
+            return filteredRoles.ToList();
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
             throw new NotImplementedException();
         }
     }
+
 }

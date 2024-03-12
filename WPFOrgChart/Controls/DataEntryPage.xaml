@@ -45,8 +45,7 @@
             <beh:Interaction.Triggers>
                 <beh:EventTrigger EventName="SelectionChanged">
                     <hm:EventToCommand CommandParameter="{Binding ElementName=tbctrl,Path=SelectedItem.Tag}" Command="{Binding ElementName=tbctrl,Path=DataContext.CMDTabChanged}"/>
-                </beh:EventTrigger>
-                
+                </beh:EventTrigger>                
             </beh:Interaction.Triggers>
             <TabItem Header="EMPLOYEE" Width="120" Tag="{x:Static enm:TargetType.Employee}" IsSelected="True">
                 <tpages:AddEmployee DataContext="{Binding}"/>
