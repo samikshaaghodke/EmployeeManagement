@@ -20,7 +20,7 @@
             <DataTemplate x:Key="PageDataEntry"> <!--Visual representation of data objects-->
                 <ctrls:DataEntryPage DataContext="{Binding}"/>
             </DataTemplate>
-            <Style x:Key="cmbStyle" TargetType="{x:Type hw:ComboButton}"> <!--Employee Management Icon-->
+            <Style x:Key="cmbStyle" TargetType="{x:Type hw:ComboButton}"> <!--Employee Management Icon applied explicit styling with key-->
                 <Setter Property="Width" Value="85"/>
                 <Setter Property="Margin" Value="15,0"/>
                 <Setter Property="Background" Value="{x:Null}"/>
@@ -29,10 +29,10 @@
                 <Setter Property="hw:Icon.DefaultColor" Value="IndianRed"/>
                 <Style.Triggers>
                     <DataTrigger Value="True">
-                        <DataTrigger.Binding>
+                        <DataTrigger.Binding> <!--Data Trigger binded to a regular property-->
                             <MultiBinding Converter="{hm:Converter Kind=MultiBindingEqualityCheck}">
                                 <Binding Path="DisplayView" NotifyOnSourceUpdated="True" UpdateSourceTrigger="PropertyChanged"/>
-                                <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                                <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/> <!--Tag property of combobutton-->
                             </MultiBinding>
                         </DataTrigger.Binding>                     
                     </DataTrigger>
@@ -52,6 +52,7 @@
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
                     <Style.Triggers>
+                        <!-- DataTrigger to switch between different content templates based on the value of "DisplayView".-->
                         <DataTrigger Binding="{Binding DisplayView,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static enm:CurrentView.DataEntry}">
                             <Setter Property="ContentTemplate" Value="{StaticResource PageDataEntry}"/>
                         </DataTrigger>

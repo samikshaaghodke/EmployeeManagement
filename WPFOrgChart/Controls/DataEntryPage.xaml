@@ -17,7 +17,7 @@
         <ResourceDictionary>
             <Style x:Key="DGSelectedRowStyle" TargetType="{x:Type DataGridRow}">
                 <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
+                    <Trigger Property="IsSelected" Value="True"> <!--Property Trigger-->
                         <Setter Property="Background" Value="Salmon"/>
                     </Trigger>
                 </Style.Triggers>
@@ -83,7 +83,7 @@
                 <DataGrid.Resources>
                     <!-- Default datagrid has a resource with Key " HighlightBrushKey. We will over write that key here with a color. So that our color will be used instead of default one.-->
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="IndianRed"/>                   
-                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}"/>
+                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DGColumnHeaderStyle}"/> <!--Style Inhertience parent in resource dictionary of this window-->
                 </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>

@@ -10,7 +10,7 @@ namespace OrgHierarchy
         public MainWindow() 
         {
             InitializeComponent();
-            //Add datacontext for data binding
+            //Add datacontext is a dependency property for data binding of source
             this.DataContext = new MainViewModel(); 
         }
     }

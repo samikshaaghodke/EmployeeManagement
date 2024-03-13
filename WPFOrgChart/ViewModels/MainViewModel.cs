@@ -11,19 +11,12 @@ using System.Collections.ObjectModel;
 using OrgHierarchy.Enums;
 using OrgHierarchy.Models;
 using System.Windows.Threading;
-using Haley.Services;
 using System.Data;
-using System.Collections.Generic;
-
+using Haley.Services;
 
 namespace OrgHierarchy.ViewModels {
     public class MainViewModel : BaseVM, IConfigHandler
     {
-        public MainViewModel()
-        {
-            Initialize();
-        }
-
         #region Attributes
         IDialogService _ds = new DialogService(); // to show dialog box if you select reporting to lower level
         IConfigManager _cfgMgr = new ConfigManagerService() { FileExtension = "org" };
@@ -31,7 +24,7 @@ namespace OrgHierarchy.ViewModels {
         TargetType CurrentTab = TargetType.Employee;
         //Setup a timer to autoclear the textblock validation message in 2 seconds.
         DispatcherTimer timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(2.5) };
-         //Since this is a simple application, directly initiating a config manager. For complex/enterprise apps, consider using a dependency injection and reuse config manager.
+        //Since this is a simple application, directly initiating a config manager. For complex/enterprise apps, consider using a dependency injection and reuse config manager.
         #endregion
 
         #region Properties
@@ -103,7 +96,12 @@ namespace OrgHierarchy.ViewModels {
         public ICommand CMDTabChanged => new DelegateCommand<object>(tabChanged);
         #endregion
 
-        #endregion      
+        #endregion
+
+        public MainViewModel()
+        {
+            Initialize();
+        }
 
         #region Config Management
         //These methods interact with the IConfigHandler interface to manage application configurations.

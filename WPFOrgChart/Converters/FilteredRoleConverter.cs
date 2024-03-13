@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;//For IMultiValueConverter
-using System.Collections.ObjectModel;
 using OrgHierarchy.Models;
 
 namespace OrgHierarchy.Converters
 {
-    public class FilteredRoleConverter : IMultiValueConverter //to convert multiple input values
+    public class FilteredRoleConverter : IMultiValueConverter
     {
+        //converting multiple input values into a filtered list of roles based on specified criteria. 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             // We expect four values:

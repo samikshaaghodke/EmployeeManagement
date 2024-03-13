@@ -1,6 +1,8 @@
 ﻿
-namespace OrgHierarchy.Enums {
-    public enum CurrentView {
+namespace OrgHierarchy.Enums 
+{
+    public enum CurrentView 
+    {
        DataEntry
     }
 }

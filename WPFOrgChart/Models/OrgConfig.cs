@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 
 
-namespace OrgHierarchy.Models {
-    public class OrgConfig : IConfig {
+namespace OrgHierarchy.Models 
+{
+    public class OrgConfig : IConfig
+    {
         public string Id { get; }
         public List<Role> Roles { get; set; }
         public List<Department> Departments { get; set; }
